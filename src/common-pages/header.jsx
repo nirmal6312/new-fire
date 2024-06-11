@@ -1,25 +1,43 @@
-import React  from "react";
-import { Link, NavLink } from "react-router-dom";
-import { useCart } from "react-use-cart";
+import React from "react";
+import { Link } from "react-router-dom";
+import Cookies from "universal-cookie";
+const Header = () => {
+  const cookies = new Cookies();
+  const token = cookies.get("TOKEN");
+  const updatetoken = token?.token;
+  const logout = () => {
+    cookies.remove("TOKEN", { path: "/" });
+    window.location.href = "/";
+  };
 
-function Header() {
+  return (
+    <>
+    <div className="main-header">
+      <div className="menu">
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          {/* <li><Link to="/admin ">Admin</Link></li> */}
+        </ul>
 
-    const {totalUniqueItems} = useCart()
-    return (
+      </div>
+      <div className="user-info">
+      {updatetoken ? (
         <>
-            <div className="main">
-                <h5><i class="fa-solid fa-cart-shopping"></i> </h5>
-                <h4>{totalUniqueItems}</h4>
-                <ul>
-                    <li><NavLink activeClassName="active" to="/home">Home</NavLink></li>
-                    <li><NavLink activeClassName="active" to="/about">About</NavLink></li>
-                    <li><NavLink activeClassName="active" to="/service">Service</NavLink></li>
-                    <li><NavLink activeClassName="active" to="/cart">Cart</NavLink></li>
-                    <li><NavLink activeClassName="active" to="/table">Table</NavLink></li>
-                </ul>
-            </div>
+          <h4>Welcome {token.email}</h4>
+          <button onClick={logout}>Logout <i class="fa-solid fa-right-from-bracket"></i></button>
         </>
-    )
-}
+      ) : (
+        <>
+          <h4>
+            <Link to="/">Login</Link>
+          </h4>
+        </>
+      )}
+      </div>
+    </div>
+      
+    </>
+  );
+};
 
-export { Header }
+export default Header;

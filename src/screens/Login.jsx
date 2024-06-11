@@ -1,123 +1,137 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 function Login() {
-  const path = useNavigate();
+  //signup
+  const [remail, rsetEmail] = useState("");
+  const [rpassword, rsetPassword] = useState("");
+  const [username,setusername] = useState("")
+  const [phone,setphone] = useState("")
 
-  //for update username with state
-  const [username, setusername] = useState("");
-  //for update password with state
-  const [password, setpassword] = useState("");
-
-  //to use get value of username
-  const uservalue = (e) => {
-    setusername(e.target.value);
-  };
-  // to use get value from password
-  const passwordvalue = (e) => {
-    setpassword(e.target.value);
-  };
-
-  //for submit the form and check user is and not
-  const handlesubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === "n@gmail.com" && password == 12345) {
-      toast.success("Login sucessfullyy....");
-      setTimeout(() => {
-        path("/home");
-      }, 20);
-    } else {
-      toast.error("User not found...");
-    }
+    const configuration = {
+      method: "post",
+      url: "https://exciting-alabaster-rosehip.glitch.me/register",
+      data: {
+        remail,
+        rpassword,
+        username,
+        phone
+      },
+    };
+
+    axios(configuration)
+      .then((result) => {
+        toast.success("user signup successfulyyy.!");
+      })
+      .catch((error) => {
+        error = new Error();
+        toast.error("user not registered");
+      });
   };
 
+  //login
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const configuration = {
+      method: "post",
+      url: "https://exciting-alabaster-rosehip.glitch.me/login",
+      data: {
+        email,
+        password,
+      },
+    };
+
+    axios(configuration)
+      .then((result) => {
+        cookies.set("TOKEN", result.data, {
+          path: "/",
+        });
+        console.log(result.data)
+        toast.success(result.data.message)
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((error) => {
+        toast.error("user not found...");
+      });
+  };
   return (
     <>
       <Toaster />
-      <section className="container forms">
-        <div className="form login">
-          <div className="form-content">
-            <header>Login</header>
-            <form action="#">
-              <div className="field input-field">
-                <input type="email" placeholder="Email" className="input" />
-              </div>
-              <div className="field input-field">
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="password"
-                />
-                {/* <i className="bx-hide eye-icon"></i> */}
-              </div>
-              <div className="form-link">
-                <a href="#" className="forgot-pass">
-                  Forgot password?
-                </a>
-              </div>
-              <div className="field button-field">
-                <button>Login</button>
-              </div>
-            </form>
-            <div className="form-link">
-              <span>
-                Don't have an account?{" "}
-                <a href="#" className="link signup-link">
-                  Signup
-                </a>
-              </span>
-            </div>
-          </div>
-          
-        </div>
+      <section id="body">
+        <div className="main">
+          <input type="checkbox" id="chk" aria-hidden="true" />
 
-        <div className="form signup">
-          <div className="form-content">
-            <header>Signup</header>
-            <form action="#">
-              <div className="field input-field">
-                <input type="email" placeholder="Email" className="input" />
-              </div>
-              <div className="field input-field">
-                <input
-                  type="password"
-                  placeholder="Create password"
-                  className="password"
-                />
-              </div>
-              <div className="field input-field">
-                <input
-                  type="password"
-                  placeholder="Confirm password"
-                  className="password"
-                />
-              </div>
-              <div className="field button-field">
-                <button>Signup</button>
-              </div>
+          <div className="signup">
+            <form onSubmit={(e) => handleSubmit(e)}>
+              <label for="chk" aria-hidden="true">
+                Sign up
+              </label>
+              <input
+                type="text"
+                name="username"
+                value={username}
+                onChange={(e) => setusername(e.target.value)}
+                placeholder="username..."
+              />
+              <input
+                type="number"
+                name="phone"
+                value={phone}
+                onChange={(e) => setphone(e.target.value)}
+                placeholder="phone..."
+              />
+              <input
+                type="text"
+                name="email"
+                value={remail}
+                onChange={(e) => rsetEmail(e.target.value)}
+                placeholder="Email..."
+              />
+              <input
+                type="text"
+                name="password"
+                value={rpassword}
+                onChange={(e) => rsetPassword(e.target.value)}
+                placeholder="Password"
+              />
+              <button>Sign up</button>
             </form>
-            <div className="form-link">
-              <span>
-                Already have an account?{" "}
-                <a href="#" className="link login-link">
-                  Login
-                </a>
-              </span>
-            </div>
           </div>
-          <div className="line"></div>
-          <div className="media-options">
-            <a href="#" className="field facebook">
-              <i className="bx bxl-facebook facebook-icon"></i>
-              <span>Login with Facebook</span>
-            </a>
-          </div>
-          <div className="media-options">
-            <a href="#" className="field google">
-              <img src="#" alt="" className="google-img" />
-              <span>Login with Google</span>
-            </a>
+
+          <div className="login">
+            <form onSubmit={(e) => handleLogin(e)}>
+              <label for="chk" aria-hidden="true">
+                Login
+              </label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                name="email"
+                placeholder="Email"
+                required=""
+              />
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                name="pswd"
+                placeholder="Password"
+                required=""
+              />
+              <button>Login</button>
+            </form>
           </div>
         </div>
       </section>

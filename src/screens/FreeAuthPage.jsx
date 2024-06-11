@@ -4,6 +4,7 @@ import Cookies from "universal-cookie";
 import  Header  from "../common-pages/header";
 import { Products } from "../products/product";
 import { Footer } from "../common-pages/footer";
+import { Login } from "./Login";
 
 
 
@@ -11,8 +12,9 @@ const cookies = new Cookies();
 
 const token = cookies.get("TOKEN");
 const updatetoken = token?.token
-export default function AuthComponent() {
-  const [message, setMessage] = useState([]);
+export default function FreeAuth() {
+  
+    const [message,setMessage] = useState("")
 
   useEffect(() => {
     const configuration = {
@@ -33,15 +35,11 @@ export default function AuthComponent() {
       });
   }, []);
 
-  const logout = () => {
-    cookies.remove("TOKEN", { path: "/" });
-    window.location.href = "/";
-  };
-
+ 
   return(
     <>
     <Header/>
-    <Products/>
+   {token ? <Products/> : <Login/>}
     <Footer/>
     
   

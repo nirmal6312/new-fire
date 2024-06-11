@@ -7,10 +7,10 @@ import { CartProvider } from "react-use-cart";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <CartProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <CartProvider>
         <App />
-      </BrowserRouter>
-    </CartProvider>
+      </CartProvider>
+    </BrowserRouter>
   </>
 );
